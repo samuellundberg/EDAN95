@@ -1,7 +1,6 @@
+import numpy as np
 from collections import Counter
 from graphviz import Digraph
-from math import log2
-
 
 class ID3DecisionTreeClassifier :
 
@@ -51,23 +50,25 @@ class ID3DecisionTreeClassifier :
         best_attr = ''
         a_count = 0
         a_count_best = 0
-
+        if len(attributes) == 1:
+            print(list(attributes.keys())[0])
+            return list(attributes.keys())[0], 0
 
         for a in attributes:
             # measure entropy for a
             feature_dict = {}
-            for d in data:
+            for i, d in enumerate(data):
                 if d[a_count] in feature_dict.keys():
                     feature_dict[d[a_count]]['count'] += 1  # value of attribute for data
                     # for each attribute we want to know how many of these
                     # that belonged to a certain class
-                    feature_dict[d[a_count]][target] += 1
+                    feature_dict[d[a_count]][target[i]] += 1
                 else:
                     feature_dict[d[a_count]] = {'count': 1}
                     feature_dict[d[a_count]]['count'] = 1
                     for c in classes:
                         feature_dict[d[a_count]][c] = 0
-                    feature_dict[d[a_count]][target] += 1
+                    feature_dict[d[a_count]][target[i]] += 1
             # now we have all information about current attribute...
             # TODO: Calculate Information Gain
             IG = 0
@@ -76,7 +77,9 @@ class ID3DecisionTreeClassifier :
                 Sv = feature_dict[key]['count']
                 Isv = 0
                 for c in classes:
-                    Isv -= feature_dict[key][c] / Sv * log2(feature_dict[key][c] / Sv)
+                    if feature_dict[key][c] / Sv != 0:
+                        Isv -= feature_dict[key][c] / Sv * np.log2(feature_dict[key][c] / Sv)
+
                 IG += Sv / S * Isv  # we want to find a that minimize IG
             if IG < max_IG:
                 max_IG = IG
@@ -85,6 +88,24 @@ class ID3DecisionTreeClassifier :
             a_count += 1
         # Change this to make some more sense
         return best_attr, a_count_best
+
+    def find_most_common_class(target):
+        freq_classes = {}
+        for t in target:
+            if t in freq_classes.keys():
+                freq_classes[t] += 1
+            else:
+                freq_classes[t] = 0
+
+        max_class = ''
+        freq_class = 0
+        for key in freq_classes.keys():
+             if freq_classes[key] > freq_class:
+                 freq_class = freq_classes[key]
+                 max_class = key
+        print('HERE')
+        print(max_class)
+        return max_class
 
 
     # the entry point for the recursive ID3-algorithm, you need to fill in the calls to your recursive implementation
@@ -107,18 +128,21 @@ class ID3DecisionTreeClassifier :
         if len(attributes) == 0:
             cls_freq = {}
             for t in target:
-                if t in cls_freq.keys:
+                if t in cls_freq.keys():
                     cls_freq[t] += 1
                 else:
                     cls_freq[t] = 1
             max_freq = 0
             max_class = ''
             for c in cls_freq:
-                if c.value() > max_freq:
-                    max_freq = c.value()
-                    max_class = c.key()
+                print(cls_freq[c])
+                if cls_freq[c] > max_freq:
+                    max_freq = cls_freq[c]
+                    max_class = c
 
             root['label'] = max_class
+            self.add_node_to_graph(root)
+
             return root
         else:
 
@@ -133,6 +157,10 @@ class ID3DecisionTreeClassifier :
             #          Set A as the target_attribute of Root
             root['attribute'], a_count = self.find_split_attr(data, target, attributes, classes, cls_freq)
             new_nodes = []
+            print(root['attribute'])
+            print(root)
+            print(attributes)
+
             for v in attributes[root['attribute']]:
                 #  add a new tree branch below Root
                 new_data = []
@@ -156,16 +184,26 @@ class ID3DecisionTreeClassifier :
                     if key != root['attribute']:
                         new_attributes[key] = attributes[key]
 
+                if len(new_data) == 0: #If Samples(v) is empty, then
+                    # add new branch with leaf as label  = most common class value in Samples.
+                    leaf = self.new_ID3_node()
+                    leaf['label'] = self.find_most_common_class(target) #think this is correct
+                    root['nodes'] = leaf
+                    #self.add_node_to_graph(root)
 
-                print("vi gör recursion!!!")
-                node = self.fit(new_data, new_target, new_attributes, new_classes)
-                new_nodes.append(node)
+                    return root
+                else:
+                    print("vi gör recursion!!!")
+                    node = self.fit(new_data, new_target, new_attributes, new_classes)
+                    new_nodes.append(node)
+                    root['nodes'] = new_nodes
+                    self.add_node_to_graph(root)
+                    return root
 
 
         # fill in something more sensible here...
         # root should become the output of the recursive tree creation
 
-        root = self.new_ID3_node()
         self.add_node_to_graph(root)
 
         return root

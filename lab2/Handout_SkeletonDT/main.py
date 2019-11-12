@@ -6,7 +6,6 @@ from sklearn import tree, metrics, datasets
 
 
 def main():
-
     attributes, classes, data, target, data2, target2 = td.ToyData().get_data()
 
     print(classes)
