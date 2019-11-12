@@ -46,7 +46,7 @@ class ID3DecisionTreeClassifier :
 
     # For you to fill in; Suggested function to find the best attribute to split with, given the set of
     # remaining attributes, the currently evaluated data and target.
-    def find_split_attr(self, data, attributes, classes, target, cls_freq):
+    def find_split_attr(self, data, target, attributes, classes, cls_freq):
         max_IG = 100000
         best_attr = ''
         a_count = 0
@@ -126,35 +126,40 @@ class ID3DecisionTreeClassifier :
             cls_freq = {}
             # count
             for t in target:
-                if t in cls_freq.keys:
+                if t in cls_freq.keys():
                     cls_freq[t] += 1
                 else:
                     cls_freq[t] = 1
             #          Set A as the target_attribute of Root
-            root['attribute'], a_count = self.find_split_attr(data, attributes, classes, target, cls_freq)
+            root['attribute'], a_count = self.find_split_attr(data, target, attributes, classes, cls_freq)
             new_nodes = []
             for v in attributes[root['attribute']]:
                 #  add a new tree branch below Root
                 new_data = []
-                new_target = [] # make tuple when done
+                new_target = []     # make tuple when done
+                new_classes = []    # make tuple when done
+
                 for i, d in enumerate(data):
                     if d[a_count] == v:
                         new_d = tuple(list(d[:a_count]) + list(d[a_count+1:]))
                         new_data.append(new_d)
                         new_target.append(target[i])
+                        if target[i] not in new_classes:
+                            new_classes.append(target[i])
+
                 new_target = tuple(new_target)
+                new_classes = tuple(new_classes)
 
                 # could be outside loop
                 new_attributes = {}
                 for key in attributes.keys():
                     if key != root['attribute']:
                         new_attributes[key] = attributes[key]
-                # TODO
-                new_classes = []
-                new_classes = tuple(new_classes)
 
-                node = self.fit()
-                #self, data, target, attributes, classes):
+
+                print("vi gör recursion!!!")
+                node = self.fit(new_data, new_target, new_attributes, new_classes)
+                new_nodes.append(node)
 
 
         # fill in something more sensible here...
