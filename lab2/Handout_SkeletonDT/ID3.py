@@ -1,6 +1,6 @@
 from collections import Counter
 from graphviz import Digraph
-
+from math import log2
 
 
 class ID3DecisionTreeClassifier :
@@ -46,10 +46,45 @@ class ID3DecisionTreeClassifier :
 
     # For you to fill in; Suggested function to find the best attribute to split with, given the set of
     # remaining attributes, the currently evaluated data and target.
-    def find_split_attr(self):
+    def find_split_attr(self, data, attributes, classes, target, cls_freq):
+        max_IG = 100000
+        best_attr = ''
+        a_count = 0
+        a_count_best = 0
 
+
+        for a in attributes:
+            # measure entropy for a
+            feature_dict = {}
+            for d in data:
+                if d[a_count] in feature_dict.keys():
+                    feature_dict[d[a_count]]['count'] += 1  # value of attribute for data
+                    # for each attribute we want to know how many of these
+                    # that belonged to a certain class
+                    feature_dict[d[a_count]][target] += 1
+                else:
+                    feature_dict[d[a_count]] = {'count': 1}
+                    feature_dict[d[a_count]]['count'] = 1
+                    for c in classes:
+                        feature_dict[d[a_count]][c] = 0
+                    feature_dict[d[a_count]][target] += 1
+            # now we have all information about current attribute...
+            # TODO: Calculate Information Gain
+            IG = 0
+            for key in feature_dict.keys():
+                S = len(data)
+                Sv = feature_dict[key]['count']
+                Isv = 0
+                for c in classes:
+                    Isv -= feature_dict[key][c] / Sv * log2(feature_dict[key][c] / Sv)
+                IG += Sv / S * Isv  # we want to find a that minimize IG
+            if IG < max_IG:
+                max_IG = IG
+                best_attr = a
+                a_count_best = a_count
+            a_count += 1
         # Change this to make some more sense
-        return None
+        return best_attr, a_count_best
 
 
     # the entry point for the recursive ID3-algorithm, you need to fill in the calls to your recursive implementation
@@ -86,33 +121,41 @@ class ID3DecisionTreeClassifier :
             root['label'] = max_class
             return root
         else:
+
+# BEGIN
             cls_freq = {}
+            # count
             for t in target:
                 if t in cls_freq.keys:
                     cls_freq[t] += 1
                 else:
                     cls_freq[t] = 1
-            while True:
-                max_entr = 0
-                max_attr = ''
-                a_count = 0
-                for a in attributes:
-                    # measure entropy for a
-                    feature_dict = {}
-                    for d in data:
-                        if d[a_count] in feature_dict.keys():
-                            feature_dict[d[a_count]]['count'] += 1 #value of attribute for data
-                            # for each class count how many
-                            # if in keys.. 
-                            # feature_dict[d[a_count]][target]
-                        else:
-                            feature_dict[d[a_count]]['count'] = 1
+            #          Set A as the target_attribute of Root
+            root['attribute'], a_count = self.find_split_attr(data, attributes, classes, target, cls_freq)
+            new_nodes = []
+            for v in attributes[root['attribute']]:
+                #  add a new tree branch below Root
+                new_data = []
+                new_target = [] # make tuple when done
+                for i, d in enumerate(data):
+                    if d[a_count] == v:
+                        new_d = tuple(list(d[:a_count]) + list(d[a_count+1:]))
+                        new_data.append(new_d)
+                        new_target.append(target[i])
+                new_target = tuple(new_target)
 
-                        entropy = 0
-                        if entropy > max_entr:
-                            max_attr = a
-                            max_entr = entropy
-                    a_count += 1
+                # could be outside loop
+                new_attributes = {}
+                for key in attributes.keys():
+                    if key != root['attribute']:
+                        new_attributes[key] = attributes[key]
+                # TODO
+                new_classes = []
+                new_classes = tuple(new_classes)
+
+                node = self.fit()
+                #self, data, target, attributes, classes):
+
 
         # fill in something more sensible here...
         # root should become the output of the recursive tree creation
