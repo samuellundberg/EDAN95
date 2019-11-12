@@ -54,8 +54,69 @@ class ID3DecisionTreeClassifier :
 
     # the entry point for the recursive ID3-algorithm, you need to fill in the calls to your recursive implementation
     def fit(self, data, target, attributes, classes):
+        root = self.new_ID3_node()
 
-        # fill in something more sensible here... root should become the output of the recursive tree creation
+        # If all belongs to one class only return one node
+        one_class = True
+        for t in target:
+            if t != target[0]:
+                one_class = False
+                break
+
+        if one_class:
+            root['label'] = target[0]
+            self.add_node_to_graph(root)
+            return root
+
+        # if attribute empty
+        if len(attributes) == 0:
+            cls_freq = {}
+            for t in target:
+                if t in cls_freq.keys:
+                    cls_freq[t] += 1
+                else:
+                    cls_freq[t] = 1
+            max_freq = 0
+            max_class = ''
+            for c in cls_freq:
+                if c.value() > max_freq:
+                    max_freq = c.value()
+                    max_class = c.key()
+
+            root['label'] = max_class
+            return root
+        else:
+            cls_freq = {}
+            for t in target:
+                if t in cls_freq.keys:
+                    cls_freq[t] += 1
+                else:
+                    cls_freq[t] = 1
+            while True:
+                max_entr = 0
+                max_attr = ''
+                a_count = 0
+                for a in attributes:
+                    # measure entropy for a
+                    feature_dict = {}
+                    for d in data:
+                        if d[a_count] in feature_dict.keys():
+                            feature_dict[d[a_count]]['count'] += 1 #value of attribute for data
+                            # for each class count how many
+                            # if in keys.. 
+                            # feature_dict[d[a_count]][target]
+                        else:
+                            feature_dict[d[a_count]]['count'] = 1
+
+                        entropy = 0
+                        if entropy > max_entr:
+                            max_attr = a
+                            max_entr = entropy
+                    a_count += 1
+
+        # fill in something more sensible here...
+        # root should become the output of the recursive tree creation
+
         root = self.new_ID3_node()
         self.add_node_to_graph(root)
 

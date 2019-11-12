@@ -33,18 +33,33 @@ To pass the assignment, you need to show an implementation that runs, produces s
 Your task consists of the following two blocks
 
 1. Use and experiment with the built in SciKitLearn DecisionTreeClassifier (based on CART)
-	1. Use the code skeleton / snippets provided or the notebook used in the tutorial
+ok	1. Use the code skeleton / snippets provided or the notebook used in the tutorial
 	from the first course week to load the digits dataset from the datasets provided
 	in SciKitLearn. Inspect the data. What is in there?
-	2. Split your data set into 70% training data (features and labels), and 30% test 	data.
-	3. Set up a DecisionTreeClassifier as it comes in SciKitLearn. Use it with default 	parameters to train a decision tree classifier for the digits dataset based on the 	training data. Follow the tutorial (or the respective documentation) and produce a 	plot of the tree with graphviz. What can you learn from this about how the used 	algorithm handles the data?
-	4. Test the classifier with the remaining test data and analyse it using the 		metrics packages of SciKitLearn (classification report, confusion matrix). What do 	you see?
-	5. Change the parameters of the classifier, e.g., the minimum number of samples in 	a leaf / for a split, to see how the tree and the results are affected.
-
-2. Implement your own decision tree classifier based on the ID3 algorithm and 		compare the results.
-	1. Make a decision regarding the data structure that your tree should be able to 	handle. In the code handout (see above), you will find the tree assumed to be 		implemented with nodes that are dictionaries. 
-	2. Inspect other parts of the code provided. You will find one example for how it 	is easily possible to construct the visualisation data (dot-data) for the 		graphviz-visualisation in parallel to the actual decision tree. Whenever a node is 	added to the tree, it can also immediately be added to the graph. Feel free to use 	this for your own implementation. 
-	3. Simply running main in the handout will produce a tree with one node, 		visualised in testTree.pdf. Make sure that this works, i.e., that you have all the 	necessary libraries installed.
+ok	2. Split your data set into 70% training data (features and labels), and 30% test 	data.
+ok	3. Set up a DecisionTreeClassifier as it comes in SciKitLearn. Use it with default 	parameters to train a decision tree classifier for the digits dataset based on the 	training data. Follow the tutorial (or the respective documentation) and produce a 	plot of the tree with graphviz. What can you learn from this about how the used 	algorithm handles the data?
+    - The algorithm checks the value of one position if its larger than x
+ok	4. Test the classifier with the remaining test data and analyse it using the
+	metrics packages of SciKitLearn (classification report, confusion matrix). What do 	you see?
+    - 79% accuracy
+	5. Change the parameters of the classifier, e.g.,
+	the minimum number of samples in a leaf / for a split,
+	to see how the tree and the results are affected.
+    - min_leaf not improving, at least n nbr of samples must end up in node, worse with high n
+    - min_split not happening alot with accuracy, worse with high n
+    - criterion = entropy instead gini. Hur man bedömmer hur bra en split är. Blev lite bättre när vi använde oss av entropy
+2. Implement your own decision tree classifier based on the ID3 algorithm and
+   compare the results.
+	1. Make a decision regarding the data structure that your tree should be able to
+		handle. In the code handout (see above), you will find the tree assumed to
+		be implemented with nodes that are dictionaries.
+	2. Inspect other parts of the code provided. You will find one example for
+	    how it 	is easily possible to construct the visualisation data (dot-data)
+	    for the graphviz-visualisation in parallel to the actual decision tree.
+	    Whenever a node is 	added to the tree, it can also immediately be added to
+	    the graph. Feel free to use 	this for your own implementation.
+	3. Simply running main in the handout will produce a tree with one node,
+	 		visualised in testTree.pdf. Make sure that this works, i.e., that you have all the 	necessary libraries installed.
 	4. The code handout contains a mere skeleton for the ID3 classifier. Implement 		what is needed to actually construct a decision tree classifier. Implement the ID3 	algorithm, e.g., according to what is provided in the lecture or on this page 		below. Use information gain as criterion for the best split attribute.
 	5. Test your classifier with the toy example provided in the ToyData class given 	in the skeleton. In main you can also see how to make use of the dot-data to 		produce a visualisation with graphviz. The tree rendered in the file given to the 	respective method should look like the one given in toyTree.pdf. 
 	6. When you are sure that everything works properly, run the ID3-training for the 	digits training data you used in part 1. Do not constrain the training, i.e., run 	with default parameters. What do you see in the plot? Analyse the result (produce 	a confusion matrix and a classification report) and compare with the result from 	part 1 (when running with default parameters).

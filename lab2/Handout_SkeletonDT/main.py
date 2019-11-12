@@ -9,6 +9,10 @@ def main():
 
     attributes, classes, data, target, data2, target2 = td.ToyData().get_data()
 
+    print(classes)
+    print(target)
+    print(attributes)
+    print(data)
     id3 = ID3.ID3DecisionTreeClassifier()
 
     myTree = id3.fit(data, target, attributes, classes)

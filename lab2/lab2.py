@@ -1,13 +1,16 @@
+import graphviz
 from sklearn import datasets
 import matplotlib.pyplot as plt
 from sklearn import tree
+import ID3
+from sklearn import metrics
 
 if __name__ == '__main__':
 # 1. Use the code skeleton / snippets provided or the notebook used in the tutorial
 # 	from the first course week to load the digits dataset from the datasets provided
 # 	in SciKitLearn. Inspect the data. What is in there?
 
-# The set contains images of digits and labels
+#   The set contains images of digits and labels
 
     # Load the digits dataset
     digits = datasets.load_digits()
@@ -36,6 +39,20 @@ if __name__ == '__main__':
     test_labels = digits.target[split + 1:]
 
 # 3. Set up a DecisionTreeClassifier as it comes in SciKitLearn.
-# TODO: Follow the tutorial (or the respective documentation) and produce a 	plot of the tree with graphviz. What can you learn from this about how the used 	algorithm handles the data?
+# TODO: Follow the tutorial (or the respective documentation) and produce a
+#  plot of the tree with graphviz.
+#  What can you learn from this about how the used algorithm handles the data?
     classifier = tree.DecisionTreeClassifier()
     classifier = classifier.fit(training_feature, training_labels)
+
+
+    dot_data = tree.export_graphviz(classifier, out_file=None)
+    graph = graphviz.Source(dot_data)
+    graph.render("digitTree_min_leaf_4")
+    # The algorithm checks the value of one position if its larger than x
+
+    y_predict = classifier.predict(test_feature)
+
+    print(metrics.confusion_matrix(test_labels, y_predict))
+    print(metrics.classification_report(test_labels, y_predict))
+    # 79% accuracy
