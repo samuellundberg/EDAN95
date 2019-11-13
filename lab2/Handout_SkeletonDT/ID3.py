@@ -89,7 +89,7 @@ class ID3DecisionTreeClassifier :
         # Change this to make some more sense
         return best_attr, a_count_best
 
-    def find_most_common_class(target):
+    def find_most_common_class(self, target):
         freq_classes = {}
         for t in target:
             if t in freq_classes.keys():
@@ -121,7 +121,6 @@ class ID3DecisionTreeClassifier :
 
         if one_class:
             root['label'] = target[0]
-            self.add_node_to_graph(root)
             return root
 
         # if attribute empty
@@ -157,16 +156,17 @@ class ID3DecisionTreeClassifier :
             #          Set A as the target_attribute of Root
             root['attribute'], a_count = self.find_split_attr(data, target, attributes, classes, cls_freq)
             new_nodes = []
+            print('here')
             print(root['attribute'])
             print(root)
             print(attributes)
-
+            # go through one attribute: {'color': ['y', 'g', 'b']}
             for v in attributes[root['attribute']]:
                 #  add a new tree branch below Root
                 new_data = []
                 new_target = []     # make tuple when done
                 new_classes = []    # make tuple when done
-
+                # create subdata for current value of current attribute, eg all w red color
                 for i, d in enumerate(data):
                     if d[a_count] == v:
                         new_d = tuple(list(d[:a_count]) + list(d[a_count+1:]))
@@ -189,16 +189,16 @@ class ID3DecisionTreeClassifier :
                     leaf = self.new_ID3_node()
                     leaf['label'] = self.find_most_common_class(target) #think this is correct
                     root['nodes'] = leaf
-                    #self.add_node_to_graph(root)
+                    self.add_node_to_graph(leaf, root['id'])
 
-                    return root
                 else:
                     print("vi gör recursion!!!")
                     node = self.fit(new_data, new_target, new_attributes, new_classes)
                     new_nodes.append(node)
                     root['nodes'] = new_nodes
+                    self.add_node_to_graph(node,root['id'])
                     self.add_node_to_graph(root)
-                    return root
+
 
 
         # fill in something more sensible here...
