@@ -1,6 +1,8 @@
 import numpy as np
 from collections import Counter
 from graphviz import Digraph
+from math import log2
+
 
 class ID3DecisionTreeClassifier :
 
@@ -45,13 +47,24 @@ class ID3DecisionTreeClassifier :
 
     # For you to fill in; Suggested function to find the best attribute to split with, given the set of
     # remaining attributes, the currently evaluated data and target.
-    def find_split_attr(self, data, target, attributes, classes, cls_freq):
+    def find_split_attr(self, data, target, attributes, classes):
+
+        # cls_freq = {}
+        # count
+        # for t in target:
+        #     if t in cls_freq.keys():
+        #         cls_freq[t] += 1
+        #     else:
+        #         cls_freq[t] = 1
+        #          Set A as the target_attribute of Root
+
+
         max_IG = 100000
         best_attr = ''
         a_count = 0
         a_count_best = 0
         if len(attributes) == 1:
-            print(list(attributes.keys())[0])
+            # print(list(attributes.keys())[0])
             return list(attributes.keys())[0], 0
 
         for a in attributes:
@@ -78,7 +91,7 @@ class ID3DecisionTreeClassifier :
                 Isv = 0
                 for c in classes:
                     if feature_dict[key][c] / Sv != 0:
-                        Isv -= feature_dict[key][c] / Sv * np.log2(feature_dict[key][c] / Sv)
+                        Isv -= feature_dict[key][c] / Sv * log2(feature_dict[key][c] / Sv)
 
                 IG += Sv / S * Isv  # we want to find a that minimize IG
             if IG < max_IG:
@@ -95,22 +108,31 @@ class ID3DecisionTreeClassifier :
             if t in freq_classes.keys():
                 freq_classes[t] += 1
             else:
-                freq_classes[t] = 0
+                freq_classes[t] = 1
 
         max_class = ''
         freq_class = 0
         for key in freq_classes.keys():
-             if freq_classes[key] > freq_class:
-                 freq_class = freq_classes[key]
-                 max_class = key
-        print('HERE')
-        print(max_class)
+            if freq_classes[key] > freq_class:
+                freq_class = freq_classes[key]
+                max_class = key
+        # print('HERE')
+        # print(max_class)
         return max_class
 
 
     # the entry point for the recursive ID3-algorithm, you need to fill in the calls to your recursive implementation
     def fit(self, data, target, attributes, classes):
         root = self.new_ID3_node()
+        root['samples'] = len(target)
+        classCounts = {}
+        if len(target) > 0:
+            for t in target:
+                if t in classCounts.keys():
+                    classCounts[t] += 1
+                else:
+                    classCounts[t] = 1
+            root['classCounts'] = classCounts
 
         # If all belongs to one class only return one node
         one_class = True
@@ -134,7 +156,7 @@ class ID3DecisionTreeClassifier :
             max_freq = 0
             max_class = ''
             for c in cls_freq:
-                print(cls_freq[c])
+                # print(cls_freq[c])
                 if cls_freq[c] > max_freq:
                     max_freq = cls_freq[c]
                     max_class = c
@@ -143,23 +165,9 @@ class ID3DecisionTreeClassifier :
             self.add_node_to_graph(root)
 
             return root
-        else:
-
-# BEGIN
-            cls_freq = {}
-            # count
-            for t in target:
-                if t in cls_freq.keys():
-                    cls_freq[t] += 1
-                else:
-                    cls_freq[t] = 1
-            #          Set A as the target_attribute of Root
-            root['attribute'], a_count = self.find_split_attr(data, target, attributes, classes, cls_freq)
+        else:  # BEGIN
+            root['attribute'], a_count = self.find_split_attr(data, target, attributes, classes)
             new_nodes = []
-            print('here')
-            print(root['attribute'])
-            print(root)
-            print(attributes)
             # go through one attribute: {'color': ['y', 'g', 'b']}
             for v in attributes[root['attribute']]:
                 #  add a new tree branch below Root
@@ -188,30 +196,47 @@ class ID3DecisionTreeClassifier :
                     # add new branch with leaf as label  = most common class value in Samples.
                     leaf = self.new_ID3_node()
                     leaf['label'] = self.find_most_common_class(target) #think this is correct
-                    root['nodes'] = leaf
+                    new_nodes.append(leaf)
                     self.add_node_to_graph(leaf, root['id'])
-
                 else:
-                    print("vi gör recursion!!!")
                     node = self.fit(new_data, new_target, new_attributes, new_classes)
                     new_nodes.append(node)
-                    root['nodes'] = new_nodes
                     self.add_node_to_graph(node,root['id'])
                     self.add_node_to_graph(root)
+            root['nodes'] = new_nodes
 
-
-
-        # fill in something more sensible here...
         # root should become the output of the recursive tree creation
-
         self.add_node_to_graph(root)
-
         return root
 
 
-
-    def predict(self, data, tree) :
+    def predict(self, data, tree, attributes) :
         predicted = list()
-
+        big_tree = tree
+        # Detta bygger helt på att attributet är sorterat
+        for idx, d in enumerate(data):
+            leaf = False
+            while not leaf:
+                # print(tree['label'])
+                if tree['label'] or tree['label'] == 0:
+                    # print(tree['label'])
+                    predicted.append(tree['label'])
+                    leaf = True
+                else:
+                    path = -1
+                    hot_attribute = tree['attribute']
+                    for a_idx, a in enumerate(attributes):
+                        if hot_attribute == a:
+                            attr_idx = a_idx
+                            break
+                    current_attr_value = d[attr_idx]
+                    for i, v in enumerate(attributes[hot_attribute]):
+                        if current_attr_value == v:
+                            path = i
+                            break
+                    # print(path)
+                    # print(tree)
+                    tree = tree['nodes'][path]
+            tree = big_tree
         # fill in something more sensible here... root should become the output of the recursive tree creation
         return predicted

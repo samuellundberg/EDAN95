@@ -56,3 +56,70 @@ if __name__ == '__main__':
     print(metrics.confusion_matrix(test_labels, y_predict))
     print(metrics.classification_report(test_labels, y_predict))
     # 79% accuracy
+
+
+    id3 = ID3.ID3DecisionTreeClassifier()
+
+
+    print(training_feature[0])
+    print(type(training_feature[0][0]))
+
+    attributes = {}
+    att_l = []
+    for i in range(16):
+        att_l.append(float(i))
+
+    for i in range(len(training_feature[0])):
+        attributes[i] = att_l
+
+    classes = []
+    for i in range(10):
+        classes.append(i)
+
+    myTree = id3.fit(training_feature, training_labels, attributes, classes)
+    print(myTree)
+    plot = id3.make_dot_data()
+    plot.render("testTree")
+    predicted = id3.predict(test_feature, myTree, attributes)
+    print(predicted)
+    print(test_labels)
+
+    print(metrics.confusion_matrix(test_labels, predicted))
+    print(metrics.classification_report(test_labels, predicted))
+
+    new_data = []
+    new_test_data = []
+    for im in training_feature:
+        new_im = []
+        for pix in im:
+            if pix < 5:
+                new_im.append('black')
+            elif pix < 10:
+                new_im.append('grey')
+            else:
+                new_im.append('white')
+        new_data.append(new_im)
+
+    for im in test_feature:
+        new_im = []
+        for pix in im:
+            if pix < 5:
+                new_im.append('black')
+            elif pix < 10:
+                new_im.append('grey')
+            else:
+                new_im.append('white')
+        new_test_data.append(new_im)
+    print(new_data)
+    new_attributes = {}
+    for i in range(len(training_feature[0])):
+        new_attributes[i] = ['black', 'grey', 'white']
+    id3_2 = ID3.ID3DecisionTreeClassifier()
+
+    myTree = id3_2.fit(new_data, training_labels, new_attributes, classes)
+    plot2 = id3_2.make_dot_data()
+    plot2.render("testTree2")
+    predicted = id3_2.predict(new_test_data, myTree, new_attributes)
+
+    print(metrics.confusion_matrix(test_labels, predicted))
+    print(metrics.classification_report(test_labels, predicted))
