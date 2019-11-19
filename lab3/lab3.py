@@ -63,7 +63,7 @@ model.compile(loss='categorical_crossentropy',
 model.summary()
 # TODO: pip install pillow
 
-print(train_generator.samples)
+#print(train_generator.samples)
 
 history = model.fit_generator(
     train_generator,

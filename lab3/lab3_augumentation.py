@@ -44,9 +44,10 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest')
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-train_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/train'
-validation_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/validation'
-test_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/test'
+# base = '/Users/samuel/Document/kurser/applied_ML/EDAN95/lab3'
+train_dir = base + '/lowers_split/train'
+validation_dir = base + '/lowers_split/validation'
+test_dir = base + '/lowers_split/test'
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
