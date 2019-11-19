@@ -44,7 +44,7 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest')
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-# base = '/Users/samuel/Document/kurser/applied_ML/EDAN95/lab3'
+# base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
 train_dir = base + '/lowers_split/train'
 validation_dir = base + '/lowers_split/validation'
 test_dir = base + '/lowers_split/test'
@@ -78,7 +78,7 @@ print(train_generator.samples)
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=np.ceil(train_generator.samples / train_generator.batch_size),
-    epochs=3,
+    epochs=30,
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 

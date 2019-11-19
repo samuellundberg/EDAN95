@@ -5,6 +5,7 @@ from keras import models
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 import numpy as np
+
 import matplotlib.pyplot as plt
 
 # **** Building a Simple Convolutional Neural Network ****
@@ -35,9 +36,10 @@ val_datagen = ImageDataGenerator(rescale=1. / 255)
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-train_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/train'
-validation_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/validation'
-test_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/test'
+# base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
+train_dir = base + '/lowers_split/train'
+validation_dir = base + '/lowers_split/validation'
+test_dir = base + '/lowers_split/test'
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
@@ -73,5 +75,6 @@ history = model.fit_generator(
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
 model.save('flowers_small_1.h5')
+
 with open(base + '/trainHistoryDict.p', 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
