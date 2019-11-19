@@ -28,6 +28,7 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(128, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Flatten())
+model.add(layers.Dropout(0.5)) # added this layer to avoid overfittning
 model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(5, activation='sigmoid'))  # we have five classes, logistic function
 
@@ -56,25 +57,22 @@ validation_generator = val_datagen.flow_from_directory(
     classes=['daisy', 'dandelion', 'rose', 'sunflower', 'tulip'])
 
 # Fitting the network
-# model.compile(loss='binary_crossentropy',
-#              optimizer='rmsprop',
-#              metrics=['accuracy'])
+
 model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.RMSprop(lr=1e-4),
               metrics=['acc'])
 model.summary()
-# TODO: pip install pillow
 
 #print(train_generator.samples)
 
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=np.ceil(train_generator.samples / train_generator.batch_size),
-    epochs=30,
+    epochs=15,
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
-model.save('flowers_small_1.h5')
+model.save('flowers_small_1_dropout_15_epocs.h5')
 
-with open(base + '/trainHistoryDict.p', 'wb') as file_pi:
+with open(base + '/trainHistoryDict_1_dropout_15_epocs.p', 'wb') as file_pi:
     pickle.dump(history.history, file_pi)

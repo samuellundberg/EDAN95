@@ -7,7 +7,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-model = load_model('flowers_small_1.h5')
+model = load_model('flowers_small_1_15_epocs.h5')
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 test_dir = base + '/lowers_split/test'
@@ -29,7 +29,7 @@ print(metrics.classification_report(labels, predictions))
 print(metrics.accuracy_score(labels, predictions))
 
 
-with open(base + '/trainHistoryDict.p', 'rb') as file_pi:
+with open(base + '/trainHistoryDict_15_epocs.p', 'rb') as file_pi:
     history = pickle.load(file_pi)
 ##### try to plot, doesnt work
 acc = history['acc']

@@ -68,20 +68,20 @@ validation_generator = val_datagen.flow_from_directory(
 #              optimizer='rmsprop',
 #              metrics=['accuracy'])
 model.compile(loss='categorical_crossentropy',
+              optimizer=optimizers.Adam()
               optimizer=optimizers.RMSprop(lr=1e-4),
               metrics=['acc'])
 model.summary()
-# TODO: pip install pillow
 
 print(train_generator.samples)
-
+print(validation_generator.samples / validation_generator.batch_size)
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=np.ceil(train_generator.samples / train_generator.batch_size),
-    epochs=30,
+    epochs=1,
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
-model.save('flowers_small_1.h5')
-with open(base + '/trainHistoryDict.p', 'wb') as file_pi:
+model.save('flowers_small_2.h5')
+with open(base + '/trainHistoryDict_2.p', 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
