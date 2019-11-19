@@ -6,8 +6,10 @@ from sklearn import metrics
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 
-base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-model = load_model('flowers_small_1.h5')
+#base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
+base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
+
+model = load_model('flowers_small_optimized.h5')
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 test_dir = base + '/lowers_split/test'
@@ -29,7 +31,7 @@ print(metrics.classification_report(labels, predictions))
 print(metrics.accuracy_score(labels, predictions))
 
 
-with open(base + '/trainHistoryDict.p', 'rb') as file_pi:
+with open(base + '/trainHistoryDict_optimized.p', 'rb') as file_pi:
     history = pickle.load(file_pi)
 ##### try to plot, doesnt work
 acc = history['acc']

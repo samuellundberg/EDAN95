@@ -1,3 +1,17 @@
+
+
+
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ##########################  OBSOLATE. DO NOT USE ###############################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+# TODO ################################################################################################
+
 import pickle
 
 from keras import layers
@@ -44,7 +58,7 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest')
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-# base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
+base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
 train_dir = base + '/lowers_split/train'
 validation_dir = base + '/lowers_split/validation'
 test_dir = base + '/lowers_split/test'
@@ -78,10 +92,10 @@ print(train_generator.samples)
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=np.ceil(train_generator.samples / train_generator.batch_size),
-    epochs=30,
+    epochs=3,
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
-model.save('flowers_small_1.h5')
+model.save('flowers_small_first.h5')
 with open(base + '/trainHistoryDict.p', 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
