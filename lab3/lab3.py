@@ -36,16 +36,16 @@ model.add(layers.Dropout(0.5)) # added this layer to avoid overfittning
 model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(5, activation='sigmoid'))  # we have five classes, logistic function
 
-# train_datagen = ImageDataGenerator(rescale=1. / 255)
-train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest')
+train_datagen = ImageDataGenerator(rescale=1. / 255)
+# train_datagen = ImageDataGenerator(
+#     rescale=1. / 255,
+#     rotation_range=40,
+#     width_shift_range=0.2,
+#     height_shift_range=0.2,
+#     shear_range=0.2,
+#     zoom_range=0.2,
+#     horizontal_flip=True,
+#     fill_mode='nearest')
 
 #train_datagen = ImageDataGenerator(
  #   rotation_range=20,
@@ -59,8 +59,8 @@ train_datagen = ImageDataGenerator(
 val_datagen = ImageDataGenerator(rescale=1. / 255)
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 
-# base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
+base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
+#base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
 train_dir = base + '/lowers_split/train'
 validation_dir = base + '/lowers_split/validation'
 test_dir = base + '/lowers_split/test'
@@ -100,8 +100,7 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
-<<<<<<< HEAD
-model.save('flowers_small_1.h5')
+model.save('flowers_small_1_adam.h5')
 
-with open(base + '/trainHistoryDict_1.p', 'wb') as file_pi:
+with open(base + '/trainHistoryDict_1_adam.p', 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
