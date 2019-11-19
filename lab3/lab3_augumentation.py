@@ -30,9 +30,18 @@ model.add(layers.Flatten())
 model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(5, activation='sigmoid'))  # we have five classes, logistic function
 
-train_datagen = ImageDataGenerator(rescale=1. / 255)
 val_datagen = ImageDataGenerator(rescale=1. / 255)
 test_datagen = ImageDataGenerator(rescale=1. / 255)
+
+train_datagen = ImageDataGenerator(
+    rescale=1. / 255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest')
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
 train_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/lowers_split/train'
@@ -68,7 +77,7 @@ print(train_generator.samples)
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=np.ceil(train_generator.samples / train_generator.batch_size),
-    epochs=30,
+    epochs=3,
     validation_data=validation_generator,
     validation_steps=np.ceil(validation_generator.samples / validation_generator.batch_size))
 
