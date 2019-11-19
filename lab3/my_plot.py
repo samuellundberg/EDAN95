@@ -8,6 +8,7 @@ import numpy as np
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
 model = load_model('flowers_small_1_15_epocs.h5')
+#base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 test_dir = base + '/lowers_split/test'
