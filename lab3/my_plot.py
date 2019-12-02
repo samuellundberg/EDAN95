@@ -7,7 +7,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 
 base = '/Users/Sofie/PycharmProjects/EDAN95/lab3'
-model = load_model('flowers_small_1_adam.h5')
+model = load_model('flowers_small_pretrained_2.h5')
 #base = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3'
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
@@ -30,7 +30,7 @@ print(metrics.classification_report(labels, predictions))
 print(metrics.accuracy_score(labels, predictions))
 
 
-with open(base + '/trainHistoryDict_1_adam.p', 'rb') as file_pi:
+with open(base + '/trainHistoryDict_pretrained_2.p', 'rb') as file_pi:
     history = pickle.load(file_pi)
 ##### try to plot, doesnt work
 acc = history['acc']
@@ -40,14 +40,14 @@ val_loss = history['val_loss']
 epochs = range(1, len(acc) + 1)
 plt.plot(epochs, acc, 'bo', label='Training acc')
 plt.plot(epochs, val_acc, 'b', label='Validation acc')
-plt.ylim([0.3, 0.9])
+#plt.ylim([0.3, 0.9])
 
 plt.title('Training and validation accuracy')
 plt.legend()
 plt.figure()
 plt.plot(epochs, loss, 'bo', label='Training loss')
 plt.plot(epochs, val_loss, 'b', label='Validation loss')
-plt.ylim([0.4, 1.4])
+#plt.ylim([0.4, 1.4])
 plt.title('Training and validation loss')
 plt.legend()
 plt.show()

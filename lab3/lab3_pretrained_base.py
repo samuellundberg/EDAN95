@@ -8,6 +8,8 @@ from keras import layers
 from keras import optimizers
 import pickle
 
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 def extract_features(directory):
 
     generator = datagen.flow_from_directory(
@@ -34,9 +36,9 @@ if __name__ == '__main__':
 
     conv_base = InceptionV3(weights='imagenet', include_top=False)
     conv_base.summary()
-    #base_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/'
+    base_dir = '/Users/Sofie/PycharmProjects/EDAN95/lab3/'
 
-    base_dir = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3/'
+    #base_dir = '/Users/samuel/Documents/kurser/applied_ML/EDAN95/lab3/'
     #
     train_dir = os.path.join(base_dir, 'lowers_split/train')
     validation_dir = os.path.join(base_dir, 'lowers_split/validation')

@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 # Create model
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu',
-                        input_shape=(150, 150, 3)))             # activation=LeakyReLU()
+                        input_shape=(150, 150, 3)))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
@@ -34,7 +34,7 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Flatten())
 model.add(layers.Dropout(0.5)) # added this layer to avoid overfittning
 model.add(layers.Dense(512, activation='relu'))
-model.add(layers.Dense(5, activation='sigmoid'))  # we have five classes, logistic function
+model.add(layers.Dense(5, activation='softmax'))  # we have five classes, logistic function
 
 train_datagen = ImageDataGenerator(rescale=1. / 255)
 # train_datagen = ImageDataGenerator(
